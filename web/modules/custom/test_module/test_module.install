@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function test_module_schema() {
+  $schema['test_form_data'] = [
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'apellido' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'nombre' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'tipo_documento' => [
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'numero_documento' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'correo_electronico' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'telefono' => [
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ],
+      'pais' => [
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
+  return $schema;
+}
+
+
+/**
+ * Implements hook_install().
+ */
+function test_module_install() {
+  // Create the 'Tipo de Documento' vocabulary.
+  if (!\Drupal\taxonomy\Entity\Vocabulary::load('tipo_documento')) {
+    $vocab_tipo_documento = \Drupal\taxonomy\Entity\Vocabulary::create([
+      'vid' => 'tipo_documento',
+      'name' => 'Tipo de Documento',
+    ]);
+    $vocab_tipo_documento->save();
+
+    // Add terms to the 'Tipo de Documento' vocabulary.
+    $terms = ['DNI', 'Pasaporte', 'Cedula'];
+    foreach ($terms as $term_name) {
+      $term = \Drupal\taxonomy\Entity\Term::create([
+        'vid' => 'tipo_documento',
+        'name' => $term_name,
+      ]);
+      $term->save();
+    }
+  }
+
+  // Create the 'Pais' vocabulary.
+  if (!\Drupal\taxonomy\Entity\Vocabulary::load('pais')) {
+    $vocab_pais = \Drupal\taxonomy\Entity\Vocabulary::create([
+      'vid' => 'pais',
+      'name' => 'Pais',
+    ]);
+    $vocab_pais->save();
+
+    // Add terms to the 'Pais' vocabulary.
+    $terms = ['Argentina', 'Colombia', 'Mexico'];
+    foreach ($terms as $term_name) {
+      $term = \Drupal\taxonomy\Entity\Term::create([
+        'vid' => 'pais',
+        'name' => $term_name,
+      ]);
+      $term->save();
+    }
+  }
+}
